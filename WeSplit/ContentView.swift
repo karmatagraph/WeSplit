@@ -10,7 +10,17 @@ import SwiftUI
 struct ContentView: View {
     @State private var chequeAmt = 0.0
     @State private var numPeople = 2
-    @State private var tipPercentage = 20
+    @State private var tipPercentage = 20 // {
+//        didSet{
+//            if tipPercentage == 0 {
+//                print("tip percent is 0% --------------------")
+//                shouldBeRed = true
+//            }
+//        }
+//    }
+    @State private var shouldBeRed = false
+    
+  
     
     
     
@@ -32,6 +42,14 @@ struct ContentView: View {
         let grandTotal = totalpp * personCount
         return grandTotal
     }
+    
+    
+//    var tipForeground: Bool {
+//        if tipPercentage == 0 {
+//            return true
+//        }
+//        return false
+//    }
     
     var body: some View {
         NavigationView{
@@ -56,8 +74,15 @@ struct ContentView: View {
                         ForEach(0..<101){
                             Text($0 , format: .percent)
                         }
-                        
                     }
+                    .onChange(of: tipPercentage) { newValue in
+                        if newValue == 0 {
+                            shouldBeRed = true
+                        }else {
+                            shouldBeRed = false
+                        }
+                    }
+                    
                     
                 } header: {
                     Text("How much tip you want to leave?")
@@ -70,8 +95,10 @@ struct ContentView: View {
                 }
                 Section{
                     Text(grandTotalAll,format: .currency(code: Locale.current.currencyCode ?? "USD"))
+                        .foregroundColor(shouldBeRed ? .red : nil)
                 }header: {
                     Text("Grand total check for all person")
+                        
                 }
                 
             }
